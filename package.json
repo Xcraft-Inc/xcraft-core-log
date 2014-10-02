@@ -16,6 +16,8 @@
   },
   "author": "Mathieu Schroeter",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "cli-color" : "~0.3.2"
+  },
   "devDependencies": {}
 }
