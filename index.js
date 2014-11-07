@@ -1,6 +1,6 @@
 'use strict';
 
-var mainModuleName = 'zog';
+var mainModuleName = 'xcraft';
 
 var currentLevel = 1;
 var currentUseColor = true;
@@ -33,10 +33,10 @@ module.exports = function (module) {
       return currentUseColor ? clc.whiteBright.bold (str) : str;
     };
 
-    var zog = whiteBrightBold (mainModuleName);
+    var xcraft = whiteBrightBold (mainModuleName);
     var args =
     [
-      zog + ' [%s]%s%s: ' + format,
+      xcraft + ' [%s]%s%s: ' + format,
       whiteBrightBold (moduleName),
       currentUseDatetime ? ' (' + new Date ().toISOString () + ') ' : ' ',
       levels[currentUseColor][level]
