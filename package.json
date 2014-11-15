@@ -15,7 +15,7 @@
     "url": "lib/xcraft-core-log"
   },
   "author": "Mathieu Schroeter",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "cli-color": "^0.3.2"
   },
