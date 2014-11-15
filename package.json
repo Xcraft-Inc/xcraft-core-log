@@ -10,14 +10,14 @@
     "xcraft",
     "logs"
   ],
-  "repository" : {
-    "type" : "file",
-    "url" : "lib/xcraft-core-log"
+  "repository": {
+    "type": "file",
+    "url": "lib/xcraft-core-log"
   },
   "author": "Mathieu Schroeter",
   "license": "ISC",
   "dependencies": {
-    "cli-color" : "~0.3.2"
+    "cli-color": "^0.3.2"
   },
   "devDependencies": {}
 }
