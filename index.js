@@ -34,8 +34,7 @@ module.exports = function (module) {
     };
 
     var xcraft = whiteBrightBold (mainModuleName);
-    var args =
-    [
+    var args = [
       xcraft + ' [%s]%s%s: ' + format,
       whiteBrightBold (moduleName),
       currentUseDatetime ? ' (' + new Date ().toISOString () + ') ' : ' ',
