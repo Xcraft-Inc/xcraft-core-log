@@ -41,6 +41,7 @@ module.exports = function (module) {
       levels[currentUseColor][level]
     ];
     args = args.concat (Array.prototype.slice.call (arguments, 2));
+    args[0] = args[0].replace (/\n$/, '');
 
     console.log.apply (this, args);
   };
