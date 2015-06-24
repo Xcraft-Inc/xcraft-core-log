@@ -2,6 +2,8 @@
 
 var mainModuleName = 'xcraft';
 
+var util = require ('util');
+
 var currentLevel = 1;
 var currentUseColor = true;
 var currentUseDatetime = false;
@@ -32,6 +34,10 @@ module.exports = function (module) {
     var whiteBrightBold = function (str) {
       return currentUseColor ? clc.whiteBright.bold (str) : str;
     };
+
+    if (typeof format === 'object') {
+      format = util.inspect (format);
+    }
 
     var xcraft = whiteBrightBold (mainModuleName);
     var args = [
