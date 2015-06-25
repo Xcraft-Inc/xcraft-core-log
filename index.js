@@ -2,86 +2,102 @@
 
 var mainModuleName = 'xcraft';
 
-var util = require ('util');
+var util         = require ('util');
+var EventEmitter = require ('events').EventEmitter;
+
+var clc = require ('cli-color');
 
 var currentLevel = 1;
 var currentUseColor = true;
 var currentUseDatetime = false;
 
-module.exports = function (module) {
-  var moduleName = module;
-  var clc = require ('cli-color');
-  var levelsText = ['Verb', 'Info', 'Warn', 'Err'];
-  var levels = {
-    true: [
-      clc.cyanBright   (levelsText[0]),
-      clc.greenBright  (levelsText[1]),
-      clc.yellowBright (levelsText[2]),
-      clc.redBright    (levelsText[3])
-    ],
-    false: levelsText
+var levelsText = ['Verb', 'Info', 'Warn', 'Err'];
+var levels = {
+  true: [
+    clc.cyanBright   (levelsText[0]),
+    clc.greenBright  (levelsText[1]),
+    clc.yellowBright (levelsText[2]),
+    clc.redBright    (levelsText[3])
+  ],
+  false: levelsText
+};
+
+function Log (mod) {
+  EventEmitter.call (this);
+  this._moduleName = mod;
+}
+
+util.inherits (Log, EventEmitter);
+
+Log.prototype._testLevel = function (level) {
+  return level >= currentLevel;
+};
+
+Log.prototype._log = function (level, format) {
+  if (!this._testLevel (level)) {
+    return;
+  }
+
+  var whiteBrightBold = function (str) {
+    return currentUseColor ? clc.whiteBright.bold (str) : str;
   };
 
-  var testLevel = function (level) {
-    return level >= currentLevel;
-  };
+  if (typeof format === 'object') {
+    format = util.inspect (format);
+  }
 
-  var log = function (level, format) {
-    if (!testLevel (level)) {
-      return;
-    }
+  var xcraft = whiteBrightBold (mainModuleName);
+  var args = [
+    xcraft + ' [%s]%s%s: ' + format,
+    whiteBrightBold (this._moduleName),
+    currentUseDatetime ? ' (' + new Date ().toISOString () + ') ' : ' ',
+    levels[currentUseColor][level]
+  ];
+  args = args.concat (Array.prototype.slice.call (arguments, 2));
+  args[0] = args[0].replace (/\n$/, '');
 
-    var whiteBrightBold = function (str) {
-      return currentUseColor ? clc.whiteBright.bold (str) : str;
-    };
+  this.emit (levelsText[level], args);
+};
 
-    if (typeof format === 'object') {
-      format = util.inspect (format);
-    }
+Log.prototype.verb = function () {
+  this._log.apply (this, [0].concat (Array.prototype.slice.call (arguments)));
+};
 
-    var xcraft = whiteBrightBold (mainModuleName);
-    var args = [
-      xcraft + ' [%s]%s%s: ' + format,
-      whiteBrightBold (moduleName),
-      currentUseDatetime ? ' (' + new Date ().toISOString () + ') ' : ' ',
-      levels[currentUseColor][level]
-    ];
-    args = args.concat (Array.prototype.slice.call (arguments, 2));
-    args[0] = args[0].replace (/\n$/, '');
+Log.prototype.info = function () {
+  this._log.apply (this, [1].concat (Array.prototype.slice.call (arguments)));
+};
 
-    console.log.apply (this, args);
-  };
+Log.prototype.warn = function () {
+  this._log.apply (this, [2].concat (Array.prototype.slice.call (arguments)));
+};
 
-  return {
-    verb: function () {
-      log.apply (this, [0].concat (Array.prototype.slice.call (arguments)));
-    },
+Log.prototype.err = function () {
+  this._log.apply (this, [3].concat (Array.prototype.slice.call (arguments)));
+};
 
-    info: function () {
-      log.apply (this, [1].concat (Array.prototype.slice.call (arguments)));
-    },
+Log.prototype.verbosity = function (level) {
+  if (level < 0 || level > 3) {
+    return;
+  }
+  currentLevel = level;
+};
 
-    warn: function () {
-      log.apply (this, [2].concat (Array.prototype.slice.call (arguments)));
-    },
+Log.prototype.color = function (useColor) {
+  currentUseColor = useColor;
+};
 
-    err: function () {
-      log.apply (this, [3].concat (Array.prototype.slice.call (arguments)));
-    },
+Log.prototype.datetime = function (useDatetime) {
+  currentUseDatetime = useDatetime;
+};
 
-    verbosity: function (level) {
-      if (level < 0 || level > 3) {
-        return;
-      }
-      currentLevel = level;
-    },
+module.exports = function (mod) {
+  var logger = new Log (mod);
 
-    color: function (useColor) {
-      currentUseColor = useColor;
-    },
+  levelsText.forEach (function (level) {
+    logger.on (level, function (args) {
+      console.log.apply (console.log, args);
+    });
+  });
 
-    datetime: function (useDatetime) {
-      currentUseDatetime = useDatetime;
-    }
-  };
+  return logger;
 };
