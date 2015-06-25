@@ -47,16 +47,25 @@ Log.prototype._log = function (level, format) {
   }
 
   var xcraft = whiteBrightBold (mainModuleName);
+  var time = new Date ();
   var args = [
     xcraft + ' [%s]%s%s: ' + format,
     whiteBrightBold (this._moduleName),
-    currentUseDatetime ? ' (' + new Date ().toISOString () + ') ' : ' ',
+    currentUseDatetime ? ' (' + time.toISOString () + ') ' : ' ',
     levels[currentUseColor][level]
   ];
-  args = args.concat (Array.prototype.slice.call (arguments, 2));
+  var userArgs = Array.prototype.slice.call (arguments, 2);
+  args = args.concat (userArgs);
   args[0] = args[0].replace (/\n$/, '');
 
-  this.emit (levelsText[level], args);
+  userArgs.unshift (format);
+
+  this.emit (this.getLevels ()[level], {
+    moduleName: this._moduleName,
+    time:       time,
+    message:    util.format.apply (this, userArgs),
+    rawArgs:    args
+  });
 };
 
 Log.prototype.verb = function () {
@@ -104,8 +113,8 @@ module.exports = function (mod) {
   var logger = new Log (mod);
 
   logger.getLevels ().forEach (function (level) {
-    logger.on (level, function (args) {
-      console.log.apply (console.log, args);
+    logger.on (level, function (msg) {
+      console.log.apply (console.log, msg.rawArgs);
     });
   });
 
