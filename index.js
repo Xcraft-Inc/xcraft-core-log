@@ -90,10 +90,20 @@ Log.prototype.datetime = function (useDatetime) {
   currentUseDatetime = useDatetime;
 };
 
+Log.prototype.getLevels = function () {
+  return levelsText.map (function (level) {
+    return level.toLowerCase ();
+  });
+};
+
+Log.prototype.getModuleName = function () {
+  return this._moduleName;
+};
+
 module.exports = function (mod) {
   var logger = new Log (mod);
 
-  levelsText.forEach (function (level) {
+  logger.getLevels ().forEach (function (level) {
     logger.on (level, function (args) {
       console.log.apply (console.log, args);
     });
