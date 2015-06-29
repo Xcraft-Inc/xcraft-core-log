@@ -46,6 +46,8 @@ Log.prototype._log = function (level, format) {
     format = util.inspect (format);
   }
 
+  format = format.replace (/\n$/, '');
+
   var xcraft = whiteBrightBold (mainModuleName);
   var time = new Date ();
   var args = [
@@ -56,7 +58,6 @@ Log.prototype._log = function (level, format) {
   ];
   var userArgs = Array.prototype.slice.call (arguments, 2);
   args = args.concat (userArgs);
-  args[0] = args[0].replace (/\n$/, '');
 
   userArgs.unshift (format);
 
