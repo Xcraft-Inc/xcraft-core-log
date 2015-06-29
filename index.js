@@ -14,10 +14,10 @@ var currentUseDatetime = false;
 var levelsText = ['Verb', 'Info', 'Warn', 'Err'];
 var levels = {
   true: [
-    clc.cyanBright   (levelsText[0]),
-    clc.greenBright  (levelsText[1]),
-    clc.yellowBright (levelsText[2]),
-    clc.redBright    (levelsText[3])
+    clc.cyanBright.bold   (levelsText[0]),
+    clc.greenBright.bold  (levelsText[1]),
+    clc.yellowBright.bold (levelsText[2]),
+    clc.redBright.bold    (levelsText[3])
   ],
   false: levelsText
 };
@@ -51,7 +51,7 @@ Log.prototype._log = function (level, format) {
 
   format = format.replace (/\n$/, '');
 
-  var xcraft = whiteBrightBold (mainModuleName);
+  var xcraft = mainModuleName;
   var time = new Date ();
   var args = [
     xcraft + ' [%s]%s%s: ' + format,
