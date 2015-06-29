@@ -85,7 +85,7 @@ Log.prototype.err = function () {
   this._log.apply (this, [3].concat (Array.prototype.slice.call (arguments)));
 };
 
-Log.prototype.verbosity = function (level) {
+Log.prototype.setVerbosity = function (level) {
   if (level < 0 || level > 3) {
     return;
   }
