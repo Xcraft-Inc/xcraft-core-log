@@ -25,12 +25,15 @@ var levels = {
 function Log (mod) {
   EventEmitter.call (this);
   this._moduleName = mod;
+  this._currentLevel = currentLevel;
+
+  this.loggers = {};
 }
 
 util.inherits (Log, EventEmitter);
 
 Log.prototype._testLevel = function (level) {
-  return level >= currentLevel;
+  return level >= this._currentLevel;
 };
 
 Log.prototype._log = function (level, format) {
@@ -85,11 +88,14 @@ Log.prototype.err = function () {
   this._log.apply (this, [3].concat (Array.prototype.slice.call (arguments)));
 };
 
-Log.prototype.setVerbosity = function (level) {
+Log.prototype.setVerbosity = function (level, onlyLocal) {
   if (level < 0 || level > 3) {
     return;
   }
-  currentLevel = level;
+  if (!onlyLocal) {
+    currentLevel = level;
+  }
+  this._currentLevel = level;
 };
 
 Log.prototype.color = function (useColor) {
