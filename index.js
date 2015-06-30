@@ -27,7 +27,14 @@ function Log (mod) {
   this._moduleName = mod;
   this._currentLevel = currentLevel;
 
-  this.loggers = {};
+  this._busLog = {};
+  try {
+    this._busLog = require ('xcraft-core-buslog') (this);
+  } catch (ex) {
+    if (ex.code !== 'MODULE_NOT_FOUND') {
+      throw ex;
+    }
+  }
 }
 
 util.inherits (Log, EventEmitter);
@@ -86,6 +93,12 @@ Log.prototype.warn = function () {
 
 Log.prototype.err = function () {
   this._log.apply (this, [3].concat (Array.prototype.slice.call (arguments)));
+};
+
+Log.prototype.progress = function (topic, position, length) {
+  if (this._busLog) {
+    this._busLog.progress (topic, position, length);
+  }
 };
 
 Log.prototype.setVerbosity = function (level, onlyLocal) {
