@@ -7,7 +7,7 @@ var EventEmitter = require ('events').EventEmitter;
 
 var clc = require ('cli-color');
 
-var currentLevel = 1;
+var currentLevel = 0;
 var currentUseColor = true;
 var currentUseDatetime = false;
 
@@ -25,7 +25,7 @@ var levels = {
 function Log (mod) {
   EventEmitter.call (this);
   this._moduleName = mod;
-  this._currentLevel = currentLevel;
+  this._currentLevel = -1;
 
   this._busLog = {};
   try {
@@ -40,7 +40,10 @@ function Log (mod) {
 util.inherits (Log, EventEmitter);
 
 Log.prototype._testLevel = function (level) {
-  return level >= this._currentLevel;
+  if (this._currentLevel >= 0) {
+    return level >= this._currentLevel;
+  }
+  return level >= currentLevel;
 };
 
 Log.prototype._log = function (level, format) {
@@ -105,10 +108,11 @@ Log.prototype.setVerbosity = function (level, onlyLocal) {
   if (level < 0 || level > 3) {
     return;
   }
-  if (!onlyLocal) {
+  if (onlyLocal) {
+    this._currentLevel = level;
+  } else {
     currentLevel = level;
   }
-  this._currentLevel = level;
 };
 
 Log.prototype.color = function (useColor) {
