@@ -26,15 +26,7 @@ function Log (mod) {
   EventEmitter.call (this);
   this._moduleName = mod;
   this._currentLevel = -1;
-
-  this._busLog = {};
-  try {
-    this._busLog = require ('xcraft-core-buslog') (this);
-  } catch (ex) {
-    if (ex.code !== 'MODULE_NOT_FOUND') {
-      throw ex;
-    }
-  }
+  this._busLog = null;
 }
 
 util.inherits (Log, EventEmitter);
@@ -46,9 +38,24 @@ Log.prototype._testLevel = function (level) {
   return level >= currentLevel;
 };
 
+Log.prototype._loadBusLog = function () {
+  try {
+    var busClient = require ('xcraft-core-busclient').getGlobal ();
+    this._busLog  = require ('xcraft-core-buslog') (this, busClient);
+  } catch (ex) {
+    if (ex.code !== 'MODULE_NOT_FOUND') {
+      throw ex;
+    }
+  }
+};
+
 Log.prototype._log = function (level, format) {
   if (!this._testLevel (level)) {
     return;
+  }
+
+  if (!this._busLog) {
+    this._loadBusLog ();
   }
 
   var whiteBrightBold = function (str) {
