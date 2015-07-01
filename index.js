@@ -106,6 +106,10 @@ Log.prototype.err = function () {
 };
 
 Log.prototype.progress = function (topic, position, length) {
+  if (!this._busLog) {
+    this._loadBusLog ();
+  }
+
   if (this._busLog) {
     this._busLog.progress (topic, position, length);
   }
