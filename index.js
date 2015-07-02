@@ -22,11 +22,12 @@ var levels = {
   false: levelsText
 };
 
-function Log (mod) {
+function Log (mod, noEvents) {
   EventEmitter.call (this);
   this._moduleName = mod;
   this._currentLevel = -1;
   this._busLog = null;
+  this._noEvents = noEvents || false;
 }
 
 util.inherits (Log, EventEmitter);
@@ -39,6 +40,10 @@ Log.prototype._testLevel = function (level) {
 };
 
 Log.prototype._loadBusLog = function () {
+  if (this._noEvents) {
+    return;
+  }
+
   try {
     var busClient = require ('xcraft-core-busclient').getGlobal ();
     this._busLog  = require ('xcraft-core-buslog') (this, busClient);
@@ -144,8 +149,8 @@ Log.prototype.getModuleName = function () {
   return this._moduleName;
 };
 
-module.exports = function (mod) {
-  var logger = new Log (mod);
+module.exports = function (mod, noEvents) {
+  var logger = new Log (mod, noEvents);
 
   logger.getLevels ().forEach (function (level) {
     logger.on (level, function (msg) {
