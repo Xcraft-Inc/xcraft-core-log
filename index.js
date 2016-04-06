@@ -22,12 +22,12 @@ var levels = {
   false: levelsText
 };
 
-function Log (mod, noEvents) {
+function Log (mod, response) {
   EventEmitter.call (this);
   this._moduleName = mod;
   this._currentLevel = -1;
   this._busLog = null;
-  this._noEvents = noEvents || false;
+  this._response = response;
 }
 
 util.inherits (Log, EventEmitter);
@@ -40,13 +40,12 @@ Log.prototype._testLevel = function (level) {
 };
 
 Log.prototype._loadBusLog = function () {
-  if (this._noEvents) {
+  if (!this._response) {
     return;
   }
 
   try {
-    var busClient = require ('xcraft-core-busclient').getGlobal ();
-    this._busLog  = require ('xcraft-core-buslog') (this, busClient);
+    this._busLog  = require ('xcraft-core-buslog') (this, this._response);
   } catch (ex) {
     if (ex.code !== 'MODULE_NOT_FOUND') {
       throw ex;
@@ -131,6 +130,10 @@ Log.prototype.setVerbosity = function (level, onlyLocal) {
   }
 };
 
+Log.prototype.setResponse = function (response) {
+  this._response = response;
+};
+
 Log.prototype.color = function (useColor) {
   currentUseColor = useColor;
 };
@@ -149,8 +152,8 @@ Log.prototype.getModuleName = function () {
   return this._moduleName;
 };
 
-module.exports = function (mod, noEvents) {
-  var logger = new Log (mod, noEvents);
+module.exports = function (mod, response) {
+  var logger = new Log (mod, response);
 
   logger.getLevels ().forEach (function (level) {
     logger.on (level, function (msg) {
