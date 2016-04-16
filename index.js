@@ -22,6 +22,35 @@ var levels = {
   false: levelsText
 };
 
+
+// http://stackoverflow.com/a/29581862
+function getCallerFile () {
+  const originalFunc = Error.prepareStackTrace;
+
+  let callerfile;
+  try {
+    const err = new Error ();
+    let currentfile;
+
+    Error.prepareStackTrace = function (err, stack) {
+      return stack;
+    };
+
+    currentfile = err.stack.shift ().getFileName ();
+
+    while (err.stack.length) {
+      callerfile = err.stack.shift ().getFileName ();
+
+      if (currentfile !== callerfile) {
+        break;
+      }
+    }
+  } catch (ex) {}
+
+  Error.prepareStackTrace = originalFunc;
+  return callerfile;
+}
+
 function Log (mod, response) {
   EventEmitter.call (this);
   this._moduleName = mod;
@@ -41,7 +70,7 @@ Log.prototype._testLevel = function (level) {
 
 Log.prototype._loadBusLog = function () {
   if (!this._response) {
-    return;
+    return false;
   }
 
   try {
@@ -50,16 +79,33 @@ Log.prototype._loadBusLog = function () {
     if (ex.code !== 'MODULE_NOT_FOUND') {
       throw ex;
     }
+    return false;
   }
+  return true;
+};
+
+Log.prototype.getModule = function () {
+  let module = this._moduleName;
+
+  const caller = getCallerFile ()
+    .replace (/.*xcraft-[a-z]+-([a-z0-9]+).*/, '$1');
+
+  if (this._moduleName && this._moduleName.search (caller) === -1) {
+    module += `/${caller}`;
+  }
+
+  return module;
 };
 
 Log.prototype._log = function (level, format) {
-  if (!this._testLevel (level)) {
-    return;
+  let isBus = false;
+  if (!this._busLog) {
+    isBus = this._loadBusLog ();
   }
 
-  if (!this._busLog) {
-    this._loadBusLog ();
+  /* Continue is busLog is available. */
+  if (!this._testLevel (level) && !isBus) {
+    return;
   }
 
   var whiteBrightBold = function (str) {
@@ -72,20 +118,21 @@ Log.prototype._log = function (level, format) {
 
   format = format.replace (/\n$/, '');
 
+  const mod = this.getModule ();
   var xcraft = mainModuleName;
   var time = new Date ();
   var args = [
     xcraft + ' [%s]%s%s: ' + format,
-    whiteBrightBold (this._moduleName),
+    whiteBrightBold (mod),
     currentUseDatetime ? ' (' + time.toISOString () + ') ' : ' ',
     levels[currentUseColor][level]
   ];
   var userArgs = Array.prototype.slice.call (arguments, 2);
   args = args.concat (userArgs);
-
   userArgs.unshift (format);
 
   this.emit (this.getLevels ()[level], {
+    module:     mod,
     moduleName: this._moduleName,
     time:       time,
     message:    util.format.apply (this, userArgs),
