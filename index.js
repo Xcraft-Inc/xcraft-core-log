@@ -203,9 +203,11 @@ Log.prototype.getModuleName = function () {
 module.exports = function (mod, response) {
   var logger = new Log (mod, response);
 
-  logger.getLevels ().forEach (function (level) {
-    logger.on (level, function (msg) {
-      console.log.apply (console.log, msg.rawArgs);
+  logger.getLevels ().forEach ((level, index) => {
+    logger.on (level, (msg) => {
+      if (logger._testLevel (index)) {
+        console.log.apply (console.log, msg.rawArgs);
+      }
     });
   });
 
