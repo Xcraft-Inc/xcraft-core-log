@@ -170,6 +170,7 @@ Log.prototype.setVerbosity = function (level, onlyLocal) {
   if (level < 0 || level > 3) {
     return;
   }
+
   if (onlyLocal) {
     this._currentLevel = level;
   } else {
