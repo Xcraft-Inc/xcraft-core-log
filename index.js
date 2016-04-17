@@ -69,6 +69,10 @@ Log.prototype._testLevel = function (level) {
 };
 
 Log.prototype._loadBusLog = function () {
+  if (this._busLog) {
+    return true;
+  }
+
   if (!this._response) {
     return false;
   }
@@ -98,13 +102,10 @@ Log.prototype.getModule = function () {
 };
 
 Log.prototype._log = function (level, format) {
-  let isBus = false;
-  if (!this._busLog) {
-    isBus = this._loadBusLog ();
-  }
+  const isBus = this._loadBusLog ();
 
   /* Continue is busLog is available. */
-  if (!this._testLevel (level) && !isBus) {
+  if (!isBus && !this._testLevel (level)) {
     return;
   }
 
