@@ -2,6 +2,7 @@
 
 var mainModuleName = 'xcraft';
 
+const path       = require ('path');
 var util         = require ('util');
 var EventEmitter = require ('events').EventEmitter;
 
@@ -91,8 +92,13 @@ Log.prototype._loadBusLog = function () {
 Log.prototype.getModule = function () {
   let module = this._moduleName;
 
-  const caller = getCallerFile ()
+  const callerFile = getCallerFile ();
+  let caller = callerFile
     .replace (/.*xcraft-[a-z]+-([a-z0-9]+).*/, '$1');
+
+  if (caller === callerFile) {
+    caller = path.basename (callerFile);
+  }
 
   if (this._moduleName && this._moduleName.search (caller) === -1) {
     module += `/${caller}`;
