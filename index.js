@@ -2,8 +2,8 @@
 
 var mainModuleName = 'xcraft';
 
-const path       = require ('path');
-var util         = require ('util');
+const path = require ('path');
+var util = require ('util');
 var EventEmitter = require ('events').EventEmitter;
 
 var clc = require ('cli-color');
@@ -15,14 +15,13 @@ var currentUseDatetime = false;
 var levelsText = ['Verb', 'Info', 'Warn', 'Err'];
 var levels = {
   true: [
-    clc.cyanBright.bold   (levelsText[0]),
-    clc.greenBright.bold  (levelsText[1]),
+    clc.cyanBright.bold (levelsText[0]),
+    clc.greenBright.bold (levelsText[1]),
     clc.yellowBright.bold (levelsText[2]),
-    clc.redBright.bold    (levelsText[3])
+    clc.redBright.bold (levelsText[3]),
   ],
-  false: levelsText
+  false: levelsText,
 };
-
 
 // http://stackoverflow.com/a/29581862
 function getCallerFile () {
@@ -79,7 +78,7 @@ Log.prototype._loadBusLog = function () {
   }
 
   try {
-    this._busLog  = require ('xcraft-core-buslog') (this, this._response);
+    this._busLog = require ('xcraft-core-buslog') (this, this._response);
   } catch (ex) {
     if (ex.code !== 'MODULE_NOT_FOUND') {
       throw ex;
@@ -93,8 +92,7 @@ Log.prototype.getModule = function () {
   let module = this._moduleName;
 
   const callerFile = getCallerFile ();
-  let caller = callerFile
-    .replace (/.*xcraft-[a-z]+-([a-z0-9]+).*/, '$1');
+  let caller = callerFile.replace (/.*xcraft-[a-z]+-([a-z0-9]+).*/, '$1');
 
   if (caller === callerFile) {
     caller = path.basename (callerFile);
@@ -132,18 +130,18 @@ Log.prototype._log = function (level, format) {
     xcraft + ' [%s]%s%s: ' + format,
     whiteBrightBold (mod),
     currentUseDatetime ? ' (' + time.toISOString () + ') ' : ' ',
-    levels[currentUseColor][level]
+    levels[currentUseColor][level],
   ];
   var userArgs = Array.prototype.slice.call (arguments, 2);
   args = args.concat (userArgs);
   userArgs.unshift (format);
 
   this.emit (this.getLevels ()[level], {
-    module:     mod,
+    module: mod,
     moduleName: this._moduleName,
-    time:       time,
-    message:    util.format.apply (this, userArgs),
-    rawArgs:    args
+    time: time,
+    message: util.format.apply (this, userArgs),
+    rawArgs: args,
   });
 };
 
@@ -211,7 +209,7 @@ module.exports = function (mod, response) {
   var logger = new Log (mod, response);
 
   logger.getLevels ().forEach ((level, index) => {
-    logger.on (level, (msg) => {
+    logger.on (level, msg => {
       if (logger._testLevel (index)) {
         console.log.apply (console.log, msg.rawArgs);
       }
