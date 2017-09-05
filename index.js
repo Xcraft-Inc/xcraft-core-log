@@ -105,7 +105,7 @@ Log.prototype.getModule = function () {
   return module;
 };
 
-Log.prototype._log = function (level, format) {
+Log.prototype._log = function (level, format, ...params) {
   const isBus = this._loadBusLog ();
 
   /* Continue is busLog is available. */
@@ -132,33 +132,32 @@ Log.prototype._log = function (level, format) {
     currentUseDatetime ? ' (' + time.toISOString () + ') ' : ' ',
     levels[currentUseColor][level],
   ];
-  var userArgs = Array.prototype.slice.call (arguments, 2);
-  args = args.concat (userArgs);
-  userArgs.unshift (format);
+
+  args = args.concat (params);
 
   this.emit (this.getLevels ()[level], {
     module: mod,
     moduleName: this._moduleName,
     time: time,
-    message: util.format.apply (this, userArgs),
+    message: util.format (format, ...params),
     rawArgs: args,
   });
 };
 
-Log.prototype.verb = function () {
-  this._log.apply (this, [0].concat (Array.prototype.slice.call (arguments)));
+Log.prototype.verb = function (...args) {
+  this._log (0, ...args);
 };
 
-Log.prototype.info = function () {
-  this._log.apply (this, [1].concat (Array.prototype.slice.call (arguments)));
+Log.prototype.info = function (...args) {
+  this._log (1, ...args);
 };
 
-Log.prototype.warn = function () {
-  this._log.apply (this, [2].concat (Array.prototype.slice.call (arguments)));
+Log.prototype.warn = function (...args) {
+  this._log (2, ...args);
 };
 
-Log.prototype.err = function () {
-  this._log.apply (this, [3].concat (Array.prototype.slice.call (arguments)));
+Log.prototype.err = function (...args) {
+  this._log (3, ...args);
 };
 
 Log.prototype.progress = function (topic, position, length) {
