@@ -56,6 +56,7 @@ function Log (mod, response) {
   this._moduleName = mod;
   this._currentLevel = -1;
   this._busLog = null;
+  this._busLogCheck = false;
   this._response = response;
 }
 
@@ -73,7 +74,7 @@ Log.prototype._loadBusLog = function () {
     return true;
   }
 
-  if (!this._response) {
+  if (!this._response || this._busLogCheck) {
     return false;
   }
 
@@ -84,7 +85,10 @@ Log.prototype._loadBusLog = function () {
       throw ex;
     }
     return false;
+  } finally {
+    this._busLogCheck = true;
   }
+
   return true;
 };
 
