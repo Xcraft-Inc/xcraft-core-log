@@ -2,11 +2,11 @@
 
 var mainModuleName = 'xcraft';
 
-const path = require ('path');
-var util = require ('util');
-var EventEmitter = require ('events').EventEmitter;
+const path = require('path');
+var util = require('util');
+var EventEmitter = require('events').EventEmitter;
 
-var clc = require ('cli-color');
+var clc = require('cli-color');
 
 var currentLevel = 0;
 var currentUseColor = true;
@@ -15,31 +15,31 @@ var currentUseDatetime = false;
 var levelsText = ['Verb', 'Info', 'Warn', 'Err'];
 var levels = {
   true: [
-    clc.cyanBright.bold (levelsText[0]),
-    clc.greenBright.bold (levelsText[1]),
-    clc.yellowBright.bold (levelsText[2]),
-    clc.redBright.bold (levelsText[3]),
+    clc.cyanBright.bold(levelsText[0]),
+    clc.greenBright.bold(levelsText[1]),
+    clc.yellowBright.bold(levelsText[2]),
+    clc.redBright.bold(levelsText[3]),
   ],
   false: levelsText,
 };
 
 // http://stackoverflow.com/a/29581862
-function getCallerFile () {
+function getCallerFile() {
   const originalFunc = Error.prepareStackTrace;
 
   let callerfile;
   try {
-    const err = new Error ();
+    const err = new Error();
     let currentfile;
 
-    Error.prepareStackTrace = function (err, stack) {
+    Error.prepareStackTrace = function(err, stack) {
       return stack;
     };
 
-    currentfile = err.stack.shift ().getFileName ();
+    currentfile = err.stack.shift().getFileName();
 
     while (err.stack.length) {
-      callerfile = err.stack.shift ().getFileName ();
+      callerfile = err.stack.shift().getFileName();
 
       if (currentfile !== callerfile) {
         break;
@@ -51,8 +51,8 @@ function getCallerFile () {
   return callerfile;
 }
 
-function Log (mod, response) {
-  EventEmitter.call (this);
+function Log(mod, response) {
+  EventEmitter.call(this);
   this._moduleName = mod;
   this._currentLevel = -1;
   this._busLog = null;
@@ -60,16 +60,16 @@ function Log (mod, response) {
   this._response = response;
 }
 
-util.inherits (Log, EventEmitter);
+util.inherits(Log, EventEmitter);
 
-Log.prototype._testLevel = function (level) {
+Log.prototype._testLevel = function(level) {
   if (this._currentLevel >= 0) {
     return level >= this._currentLevel;
   }
   return level >= currentLevel;
 };
 
-Log.prototype._loadBusLog = function () {
+Log.prototype._loadBusLog = function() {
   if (this._busLog) {
     return true;
   }
@@ -79,7 +79,7 @@ Log.prototype._loadBusLog = function () {
   }
 
   try {
-    this._busLog = require ('xcraft-core-buslog') (this, this._response);
+    this._busLog = require('xcraft-core-buslog')(this, this._response);
   } catch (ex) {
     if (ex.code !== 'MODULE_NOT_FOUND') {
       throw ex;
@@ -92,89 +92,89 @@ Log.prototype._loadBusLog = function () {
   return true;
 };
 
-Log.prototype.getModule = function () {
+Log.prototype.getModule = function() {
   let module = this._moduleName;
 
-  const callerFile = getCallerFile ();
-  let caller = callerFile.replace (/.*xcraft-[a-z]+-([a-z0-9]+).*/, '$1');
+  const callerFile = getCallerFile();
+  let caller = callerFile.replace(/.*xcraft-[a-z]+-([a-z0-9]+).*/, '$1');
 
   if (caller === callerFile) {
-    caller = path.basename (callerFile);
+    caller = path.basename(callerFile);
   }
 
-  if (this._moduleName && this._moduleName.search (caller) === -1) {
+  if (this._moduleName && this._moduleName.search(caller) === -1) {
     module += `/${caller}`;
   }
 
   return module;
 };
 
-Log.prototype._log = function (level, format, ...params) {
-  const isBus = this._loadBusLog ();
+Log.prototype._log = function(level, format, ...params) {
+  const isBus = this._loadBusLog();
 
   /* Continue is busLog is available. */
-  if (!isBus && !this._testLevel (level)) {
+  if (!isBus && !this._testLevel(level)) {
     return;
   }
 
-  var whiteBrightBold = function (str) {
-    return currentUseColor ? clc.whiteBright.bold (str) : str;
+  var whiteBrightBold = function(str) {
+    return currentUseColor ? clc.whiteBright.bold(str) : str;
   };
 
   if (typeof format === 'object') {
-    format = util.inspect (format);
+    format = util.inspect(format);
   }
 
-  format = format.replace (/\n$/, '');
+  format = format.replace(/\n$/, '');
 
-  const mod = this.getModule ();
+  const mod = this.getModule();
   var xcraft = mainModuleName;
-  var time = new Date ();
+  var time = new Date();
   var args = [
     xcraft + ' [%s]%s%s: ' + format,
-    whiteBrightBold (mod),
-    currentUseDatetime ? ' (' + time.toISOString () + ') ' : ' ',
+    whiteBrightBold(mod),
+    currentUseDatetime ? ' (' + time.toISOString() + ') ' : ' ',
     levels[currentUseColor][level],
   ];
 
-  args = args.concat (params);
+  args = args.concat(params);
 
-  this.emit (this.getLevels ()[level], {
+  this.emit(this.getLevels()[level], {
     module: mod,
     moduleName: this._moduleName,
     time: time,
-    message: util.format (format, ...params),
+    message: util.format(format, ...params),
     rawArgs: args,
   });
 };
 
-Log.prototype.verb = function (...args) {
-  this._log (0, ...args);
+Log.prototype.verb = function(...args) {
+  this._log(0, ...args);
 };
 
-Log.prototype.info = function (...args) {
-  this._log (1, ...args);
+Log.prototype.info = function(...args) {
+  this._log(1, ...args);
 };
 
-Log.prototype.warn = function (...args) {
-  this._log (2, ...args);
+Log.prototype.warn = function(...args) {
+  this._log(2, ...args);
 };
 
-Log.prototype.err = function (...args) {
-  this._log (3, ...args);
+Log.prototype.err = function(...args) {
+  this._log(3, ...args);
 };
 
-Log.prototype.progress = function (topic, position, length) {
+Log.prototype.progress = function(topic, position, length) {
   if (!this._busLog) {
-    this._loadBusLog ();
+    this._loadBusLog();
   }
 
   if (this._busLog) {
-    this._busLog.progress (topic, position, length);
+    this._busLog.progress(topic, position, length);
   }
 };
 
-Log.prototype.setVerbosity = function (level, onlyLocal) {
+Log.prototype.setVerbosity = function(level, onlyLocal) {
   if (level < 0 || level > 3) {
     return;
   }
@@ -186,35 +186,35 @@ Log.prototype.setVerbosity = function (level, onlyLocal) {
   }
 };
 
-Log.prototype.setResponse = function (response) {
+Log.prototype.setResponse = function(response) {
   this._response = response;
 };
 
-Log.prototype.color = function (useColor) {
+Log.prototype.color = function(useColor) {
   currentUseColor = useColor;
 };
 
-Log.prototype.datetime = function (useDatetime) {
+Log.prototype.datetime = function(useDatetime) {
   currentUseDatetime = useDatetime;
 };
 
-Log.prototype.getLevels = function () {
-  return levelsText.map (function (level) {
-    return level.toLowerCase ();
+Log.prototype.getLevels = function() {
+  return levelsText.map(function(level) {
+    return level.toLowerCase();
   });
 };
 
-Log.prototype.getModuleName = function () {
+Log.prototype.getModuleName = function() {
   return this._moduleName;
 };
 
-module.exports = function (mod, response) {
-  var logger = new Log (mod, response);
+module.exports = function(mod, response) {
+  var logger = new Log(mod, response);
 
-  logger.getLevels ().forEach ((level, index) => {
-    logger.on (level, msg => {
-      if (logger._testLevel (index)) {
-        console.log.apply (console.log, msg.rawArgs);
+  logger.getLevels().forEach((level, index) => {
+    logger.on(level, msg => {
+      if (logger._testLevel(index)) {
+        console.log.apply(console.log, msg.rawArgs);
       }
     });
   });
