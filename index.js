@@ -22,7 +22,6 @@ var levels = {
   ],
   false: levelsText,
 };
-let busLogCheck = false;
 
 // http://stackoverflow.com/a/29581862
 function getCallerFile() {
@@ -57,6 +56,7 @@ function Log(mod, response) {
   this._moduleName = mod;
   this._currentLevel = -1;
   this._busLog = null;
+  this._busLogCheck = false;
   this._response = response;
 }
 
@@ -74,7 +74,7 @@ Log.prototype._loadBusLog = function() {
     return true;
   }
 
-  if (!this._response || busLogCheck) {
+  if (!this._response || this._busLogCheck) {
     return false;
   }
 
@@ -86,7 +86,7 @@ Log.prototype._loadBusLog = function() {
     }
     return false;
   } finally {
-    busLogCheck = true;
+    this._busLogCheck = true;
   }
 
   return true;
