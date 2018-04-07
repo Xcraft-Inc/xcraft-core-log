@@ -22,6 +22,7 @@ var levels = {
   ],
   false: levelsText,
 };
+let xBusLog = undefined;
 
 // http://stackoverflow.com/a/29581862
 function getCallerFile() {
@@ -79,11 +80,17 @@ Log.prototype._loadBusLog = function() {
   }
 
   try {
-    this._busLog = require('xcraft-core-buslog')(this, this._response);
+    if (xBusLog === undefined) {
+      xBusLog = require('xcraft-core-buslog');
+    }
+    if (xBusLog) {
+      this._busLog = xBusLog(this, this._response);
+    }
   } catch (ex) {
     if (ex.code !== 'MODULE_NOT_FOUND') {
       throw ex;
     }
+    xBusLog = false;
     return false;
   } finally {
     this._busLogCheck = true;
