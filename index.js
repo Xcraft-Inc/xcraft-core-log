@@ -82,6 +82,10 @@ Log.prototype._loadBusLog = function() {
   try {
     if (xBusLog === undefined) {
       xBusLog = require('xcraft-core-buslog');
+    } else if (xBusLog === false) {
+      const err = new Error(`Module not found`);
+      err.code = 'MODULE_NOT_FOUND';
+      throw err;
     }
     if (xBusLog) {
       this._busLog = xBusLog(this, this._response);
