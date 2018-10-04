@@ -2,7 +2,7 @@
   "name": "xcraft-core-log",
   "version": "1.0.0",
   "description": "Xcraft logger",
-  "main": "index.js",
+  "main": "lib/index.js",
   "engines": {
     "node": ">=6"
   },
@@ -17,6 +17,11 @@
     "type": "git",
     "url": "git+https://github.com/Xcraft-Inc/xcraft-core-log.git"
   },
+  "config": {
+    "xcraft": {
+      "commands": true
+    }
+  },
   "author": "Mathieu Schroeter",
   "license": "MIT",
   "dependencies": {
@@ -28,5 +33,8 @@
   "homepage": "https://github.com/Xcraft-Inc/xcraft-core-log#readme",
   "devDependencies": {
     "xcraft-dev-rules": "^0.2.0"
+  },
+  "optionalDependencies": {
+    "xcraft-core-buslog": "^1.0.0"
   }
 }
