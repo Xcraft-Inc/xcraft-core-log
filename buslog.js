@@ -16,10 +16,10 @@ cmd.disable = function(msg, resp) {
   resp.events.send(`buslog.disable.${msg.id}.finished`);
 };
 
-cmd.vebosity = function(msg, resp) {
+cmd.verbosity = function(msg, resp) {
   const level = msg.data.level;
-  xLog.setVerbosity(level);
-  resp.events.send(`buslog.vebosity.${msg.id}.finished`);
+  xLog.setGlobalVerbosity(level);
+  resp.events.send(`buslog.verbosity.${msg.id}.finished`);
 };
 
 /**
@@ -39,7 +39,7 @@ exports.xcraftCommands = function() {
         parallel: true,
         desc: 'disable buslog',
       },
-      vebosity: {
+      verbosity: {
         parallel: true,
         desc: 'set verbosity level',
         options: {
