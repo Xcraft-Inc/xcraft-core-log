@@ -16,6 +16,12 @@ cmd.disable = function(msg, resp) {
   resp.events.send(`buslog.disable.${msg.id}.finished`);
 };
 
+cmd.vebosity = function(msg, resp) {
+  const level = msg.data.level;
+  xLog.setVerbosity(level);
+  resp.events.send(`buslog.vebosity.${msg.id}.finished`);
+};
+
 /**
  * Retrieve the list of available commands.
  *
@@ -32,6 +38,15 @@ exports.xcraftCommands = function() {
       disable: {
         parallel: true,
         desc: 'disable buslog',
+      },
+      vebosity: {
+        parallel: true,
+        desc: 'set verbosity level',
+        options: {
+          params: {
+            required: 'level',
+          },
+        },
       },
     },
   };
