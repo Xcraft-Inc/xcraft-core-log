@@ -16,6 +16,12 @@ cmd.disable = function(msg, resp) {
   resp.events.send(`buslog.disable.${msg.id}.finished`);
 };
 
+cmd.modulenames = function(msg, resp) {
+  const moduleNames = msg.data.modulenames || [];
+  xLog.setModuleNames(moduleNames);
+  resp.events.send(`buslog.modulenames.${msg.id}.finished`);
+};
+
 cmd.verbosity = function(msg, resp) {
   const level = msg.data.level;
   xLog.setGlobalVerbosity(level);
@@ -38,6 +44,15 @@ exports.xcraftCommands = function() {
       disable: {
         parallel: true,
         desc: 'disable buslog',
+      },
+      modulenames: {
+        parallel: true,
+        desc: 'set filtering based on module names',
+        options: {
+          params: {
+            optional: 'modulenames...',
+          },
+        },
       },
       verbosity: {
         parallel: true,
