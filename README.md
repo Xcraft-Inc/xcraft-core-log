@@ -1,2 +1,3 @@
 # xcraft-core-log
+
 Logger
