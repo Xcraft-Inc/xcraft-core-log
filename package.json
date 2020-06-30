@@ -37,7 +37,8 @@
     "xcraft-dev-rules": "^2.0.0"
   },
   "optionalDependencies": {
-    "xcraft-core-buslog": "^1.0.0"
+    "xcraft-core-buslog": "^1.0.0",
+    "xcraft-core-journal": "^0.1.0"
   },
   "prettier": "xcraft-dev-prettier"
 }
