@@ -25,6 +25,7 @@
   "author": "Mathieu Schroeter",
   "license": "MIT",
   "dependencies": {
+    "as-table": "^1.0.55",
     "cli-color": "^1.0.0"
   },
   "bugs": {
