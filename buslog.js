@@ -18,8 +18,13 @@ const modulenamesApp = `${appId}.modulenames`;
 const verbosityApp = `${appId}.verbosity`;
 
 const enable = (name) => (msg, resp) => {
-  xLog.setEnable(true);
-  resp.log.warn('buslog enabled, server performances can be impacted');
+  const modes = msg.data && msg.data.modes;
+  xLog.setEnable(true, modes);
+  resp.log.warn(
+    `buslog enabled${
+      modes.length ? ' for ' + modes.join(', ') : ''
+    }; server performances can be impacted`
+  );
   resp.events.send(`buslog.${name}.${msg.id}.finished`);
 };
 
@@ -27,8 +32,13 @@ cmd.enable = enable('enable');
 cmd[enableApp] = enable(enableApp);
 
 const disable = (name) => (msg, resp) => {
-  xLog.setEnable(false);
-  resp.log.warn('buslog disabled, server returning in normal state');
+  const modes = msg.data && msg.data.modes;
+  resp.log.warn(
+    `buslog disabled${
+      modes.length ? ' for ' + modes.join(', ') : ''
+    }; server returning in normal state`
+  );
+  xLog.setEnable(false, modes);
   resp.events.send(`buslog.${name}.${msg.id}.finished`);
 };
 
@@ -57,10 +67,20 @@ const rc = {
   enable: {
     parallel: true,
     desc: 'enable buslog',
+    options: {
+      params: {
+        optional: 'modes...',
+      },
+    },
   },
   disable: {
     parallel: true,
     desc: 'disable buslog',
+    options: {
+      params: {
+        optional: 'modes...',
+      },
+    },
   },
   modulenames: {
     parallel: true,
