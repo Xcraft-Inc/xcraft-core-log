@@ -20,11 +20,6 @@ const verbosityApp = `${appId}.verbosity`;
 const enable = (name) => (msg, resp) => {
   const modes = msg.data && msg.data.modes;
   xLog.setEnable(true, modes);
-  resp.log.warn(
-    `buslog enabled${
-      modes.length ? ' for ' + modes.join(', ') : ''
-    }; server performances can be impacted`
-  );
   resp.events.send(`buslog.${name}.${msg.id}.finished`);
 };
 
@@ -33,11 +28,6 @@ cmd[enableApp] = enable(enableApp);
 
 const disable = (name) => (msg, resp) => {
   const modes = msg.data && msg.data.modes;
-  resp.log.warn(
-    `buslog disabled${
-      modes.length ? ' for ' + modes.join(', ') : ''
-    }; server returning in normal state`
-  );
   xLog.setEnable(false, modes);
   resp.events.send(`buslog.${name}.${msg.id}.finished`);
 };
