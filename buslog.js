@@ -7,7 +7,7 @@ let tribe = '';
 try {
   const xHost = require('xcraft-core-host');
   appId = xHost.appId;
-  tribe = `-${xHost.appArgs().tribe}` || '';
+  tribe = xHost.appArgs().tribe ? `-${xHost.appArgs().tribe}` : '';
 } catch (ex) {
   if (ex.code !== 'MODULE_NOT_FOUND') {
     throw ex;
