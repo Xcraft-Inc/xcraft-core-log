@@ -3,8 +3,11 @@
 const xLog = require('.');
 
 let appId = '$';
+let tribe = '';
 try {
-  appId = require('xcraft-core-host').appId;
+  const xHost = require('xcraft-core-host');
+  appId = xHost.appId;
+  tribe = `-${xHost.appArgs().tribe}` || '';
 } catch (ex) {
   if (ex.code !== 'MODULE_NOT_FOUND') {
     throw ex;
@@ -12,10 +15,11 @@ try {
 }
 
 const cmd = {};
-const enableApp = `${appId}.enable`;
-const disableApp = `${appId}.disable`;
-const modulenamesApp = `${appId}.modulenames`;
-const verbosityApp = `${appId}.verbosity`;
+const cmdNamespace = `${appId}${tribe}`;
+const enableApp = `${cmdNamespace}.enable`;
+const disableApp = `${cmdNamespace}.disable`;
+const modulenamesApp = `${cmdNamespace}.modulenames`;
+const verbosityApp = `${cmdNamespace}.verbosity`;
 
 const enable = (name) => (msg, resp) => {
   const modes = msg.data && msg.data.modes;
