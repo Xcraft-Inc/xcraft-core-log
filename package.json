@@ -39,7 +39,7 @@
   },
   "optionalDependencies": {
     "xcraft-core-buslog": "^1.1.0",
-    "xcraft-core-host": "^2.2.0",
+    "xcraft-core-host": "^3.0.0",
     "xcraft-core-journal": "^1.0.0"
   },
   "prettier": "xcraft-dev-prettier"
