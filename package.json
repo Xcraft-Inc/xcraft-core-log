@@ -26,7 +26,8 @@
   "license": "MIT",
   "dependencies": {
     "as-table": "^1.0.55",
-    "cli-color": "^1.0.0"
+    "cli-color": "^1.0.0",
+    "xcraft-core-etc": "^3.0.0"
   },
   "bugs": {
     "url": "https://github.com/Xcraft-Inc/xcraft-core-log/issues"
