@@ -10,4 +10,10 @@ module.exports = [
     message: 'enable file logging',
     default: false,
   },
+  {
+    type: 'checklist',
+    name: 'modes',
+    message: 'modes to enable for buslog',
+    default: [],
+  },
 ];
