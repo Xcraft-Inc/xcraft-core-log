@@ -11,7 +11,7 @@ module.exports = [
     default: false,
   },
   {
-    type: 'checklist',
+    type: 'checkbox',
     name: 'modes',
     message: 'modes to enable for buslog',
     default: [],
