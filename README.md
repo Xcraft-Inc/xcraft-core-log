@@ -31,8 +31,8 @@ Le logger fonctionne selon un modèle d'événements où chaque instance de `Log
 2. **Formate les messages** avec coloration, horodatage et identification du module
 3. **Distribue les logs** vers différentes sorties :
    - Console standard (stdout/stderr)
-   - Bus Xcraft ([`xcraft-core-buslog`]) pour la supervision
-   - Journal persistant ([`xcraft-core-journal`]) pour l'archivage
+   - Bus Xcraft ([xcraft-core-buslog]) pour la supervision
+   - Journal persistant ([xcraft-core-journal]) pour l'archivage
 
 Le système détecte automatiquement le module appelant en analysant la pile d'appels et peut filtrer les logs par nom de module. La détection se base sur le pattern `xcraft-[type]-[nom]` dans le chemin du fichier.
 
@@ -112,7 +112,7 @@ await this.quest.cmd('buslog.modulenames', {modulenames: ['user', 'desktop']});
 
 ### Avec xcraft-core-buslog
 
-Le module s'intègre automatiquement avec [`xcraft-core-buslog`] pour :
+Le module s'intègre automatiquement avec [xcraft-core-buslog] pour :
 
 - Transmettre les logs via le bus Xcraft
 - Supporter les modes de supervision (event, overwatch)
@@ -216,6 +216,6 @@ Chaque commande existe en version générique (`buslog.enable`) et spécialisée
 
 _Ce document a été mis à jour pour refléter la structure actuelle du module._
 
-[`xcraft-core-buslog`]: https://github.com/Xcraft-Inc/xcraft-core-buslog
-[`xcraft-core-journal`]: https://github.com/Xcraft-Inc/xcraft-core-journal
-[`xcraft-core-etc`]: https://github.com/Xcraft-Inc/xcraft-core-etc
+[xcraft-core-buslog]: https://github.com/Xcraft-Inc/xcraft-core-buslog
+[xcraft-core-journal]: https://github.com/Xcraft-Inc/xcraft-core-journal
+[xcraft-core-etc]: https://github.com/Xcraft-Inc/xcraft-core-etc
