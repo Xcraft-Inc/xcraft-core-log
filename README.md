@@ -1,4 +1,4 @@
-# 📘 Documentation du module xcraft-core-log
+# 📘 xcraft-core-log
 
 ## Aperçu
 
