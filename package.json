@@ -1,6 +1,6 @@
 {
   "name": "xcraft-core-log",
-  "version": "2.1.6",
+  "version": "2.2.0",
   "description": "Xcraft logger",
   "main": "lib/index.js",
   "engines": {
