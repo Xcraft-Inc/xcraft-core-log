@@ -23,8 +23,9 @@ const verbosityApp = `${cmdNamespace}.verbosity`;
 
 const enable = (name) => (msg, resp) => {
   const modes = msg.data && msg.data.modes;
-  xLog.setEnable(true, modes);
-  resp.events.send(`buslog.${name}.${msg.id}.finished`);
+  const state = {changed: false};
+  xLog.setEnable(true, modes, state);
+  resp.events.send(`buslog.${name}.${msg.id}.finished`, state.changed);
 };
 
 cmd.enable = enable('enable');
@@ -32,8 +33,9 @@ cmd[enableApp] = enable(enableApp);
 
 const disable = (name) => (msg, resp) => {
   const modes = msg.data && msg.data.modes;
-  xLog.setEnable(false, modes);
-  resp.events.send(`buslog.${name}.${msg.id}.finished`);
+  const state = {changed: false};
+  xLog.setEnable(false, modes, state);
+  resp.events.send(`buslog.${name}.${msg.id}.finished`, state.changed);
 };
 
 cmd.disable = disable('disable');
