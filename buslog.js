@@ -20,6 +20,7 @@ const enableApp = `${cmdNamespace}.enable`;
 const disableApp = `${cmdNamespace}.disable`;
 const modulenamesApp = `${cmdNamespace}.modulenames`;
 const verbosityApp = `${cmdNamespace}.verbosity`;
+const rotateApp = `${cmdNamespace}.rotate`;
 
 const enable = (name) => (msg, resp) => {
   const modes = msg.data && msg.data.modes;
@@ -59,6 +60,14 @@ const verbosity = (name) => (msg, resp) => {
 cmd.verbosity = verbosity('verbosity');
 cmd[verbosityApp] = verbosity(verbosityApp);
 
+const rotate = (name) => async (msg, resp) => {
+  const results = await xLog.rotate();
+  resp.events.send(`buslog.${name}.${msg.id}.finished`, results);
+};
+
+cmd.rotate = rotate('rotate');
+cmd[rotateApp] = rotate(rotateApp);
+
 const rc = {
   enable: {
     parallel: true,
@@ -96,12 +105,17 @@ const rc = {
       },
     },
   },
+  rotate: {
+    parallel: true,
+    desc: 'log rortate',
+  },
 };
 
 rc[enableApp] = rc.enable;
 rc[disableApp] = rc.disable;
 rc[modulenamesApp] = rc.modulenames;
 rc[verbosityApp] = rc.verbosity;
+rc[rotateApp] = rc.rotate;
 
 /**
  * Retrieve the list of available commands.
