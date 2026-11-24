@@ -61,7 +61,7 @@ cmd.verbosity = verbosity('verbosity');
 cmd[verbosityApp] = verbosity(verbosityApp);
 
 const rotate = (name) => async (msg, resp) => {
-  const {clear} = msg.data;
+  const clear = !!msg?.data?.clear;
   const results = await xLog.rotate(clear);
   resp.events.send(`buslog.${name}.${msg.id}.finished`, results);
 };
